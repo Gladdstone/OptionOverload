@@ -1,0 +1,59 @@
+{
+    "questions": {
+        "question1": {
+            "text": "How much time do you have?",
+            "options": {
+                "0": "0-2 hours",
+                "1": ">2 hours"
+            }
+        },
+        "question10": {
+            "text": "Comedy or drama?",
+            "options": {
+                "0": "Comedy",
+                "1": "Drama"
+            }
+        },
+        "question100": {
+            "text": "Animated or live action?",
+            "options": {
+                "0": "Animated",
+                "1": "Live-action"
+            }
+        },
+        "question101": {
+            "text": "placeholder101",
+            "options": {
+                "0": "101-0",
+                "1": "101-1"
+            }
+        },
+        "question11": {
+            "text": "Movie or TV?",
+            "options": {
+                "0": "Movie",
+                "1": "TV"
+            }
+        },
+        "question110": {
+            "text": "placeholder110",
+            "options": {
+                "0": "110-0",
+                "1": "110-1"
+            }
+        },
+        "question111": {
+            "text": "placeholder111",
+            "options": {
+                "0": "111-0",
+                "1": "111-1"
+            }
+        }
+    },
+    "answers": {
+        "answer100": "a100",
+        "answer101": "a101",
+        "answer110": "a110",
+        "answer111": "a111"
+    }
+}
