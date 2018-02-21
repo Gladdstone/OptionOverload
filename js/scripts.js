@@ -2,8 +2,10 @@
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
 
-const questions = "assets/questions.json";
+const questions = "assets/newquestions.json";
 
+// I'm not pleased that these are global variables either, but unfortunately, I'm tremendously lazy
+var ans = "1";
 var obj;
 
 
@@ -16,9 +18,7 @@ var obj;
  * @returns: void
 */
 function setup() {
-    var counter = 1;
-
-    jsonRequest(counter);
+    jsonRequest();
 
     var previous = cookieCheck("test");
     setCookie("test", "value");
@@ -45,8 +45,58 @@ function cookieCheck(cookie) {
  * otherwise, display answer
  * @param: counter current question number
  */
-function getNext(counter) {
+function getNext(value) {
+    // increment answer value
+    ans = ans + value;
     
+    // construct new article
+    let article = document.createElement("article");
+
+    // if obj contains another question, generate it, otherwise, generate the answer
+    if(obj.hasOwnProperty("q" + ans)) {
+        // increment obj to next question based on binary value
+        obj = obj["q" + ans];
+
+        let text = document.createElement("span");
+        text.innerText = obj.text;
+        article.appendChild(text);
+
+        let br = document.createElement("br");
+        article.appendChild(br);
+
+        let select = document.createElement("select");
+        select.setAttribute("onchange", "getNext(this.value)");
+        article.appendChild(select);
+
+        let def = document.createElement("option");
+        def.innerText = "Please select an option";
+        select.appendChild(def);
+
+        let options = obj.options;
+        for(var option in options) {
+            if(options.hasOwnProperty(option)) {
+                let opt = document.createElement("option");
+                opt.setAttribute("value", option);
+                opt.innerText = options[option];
+                select.appendChild(opt);
+            }
+        }
+
+        article.appendChild(select);
+    } else {
+        console.log(obj);
+    }
+
+    let br = document.createElement("br");
+    document.getElementById("main").appendChild(br);
+    document.getElementById("main").appendChild(article);
+    
+    // if there is a next question, increment to it, other wise, answer
+    if(obj.hasOwnProperty("next")) {
+        obj = obj.next;
+    } else {
+        obj = obj.answer;
+    }
 }
 
 /**
@@ -62,17 +112,16 @@ function getSelect(obj) {
 /**
  * Retrieve JSON object from server
  */
-function jsonRequest(counter) {
+function jsonRequest() {
     let xmlhttp = new XMLHttpRequest();
 
     xmlhttp.onreadystatechange = () => {
         try {
             obj = (xmlhttp.readyState === 4 && xmlhttp.status === 200) ?
                 JSON.parse(xmlhttp.responseText) : "XMLHTTP response error";
-            
             // Create and append initial question text
             let text = document.createElement("span");
-            text.innerText = obj.questions.question1.text;
+            text.innerText = obj.questions.q1.text;
             document.getElementById("initial").appendChild(text);
 
             let br = document.createElement("br");
@@ -80,10 +129,14 @@ function jsonRequest(counter) {
 
             // Create and append initial question options within select
             let select = document.createElement("select");
-            // Increment question counter
-            counter++;
-            select.setAttribute("onchange", "getNext(" + counter + ")")
-            let options = obj.questions.question1.options;
+            select.setAttribute("onchange", "getNext(this.value);");
+
+            // set default option
+            let def = document.createElement("option");
+            def.innerText = "Please select an option";
+            select.appendChild(def);
+
+            let options = obj.questions.q1.options;
             for(var option in options) {
                 if(options.hasOwnProperty(option)) {
                     let opt = document.createElement("option");
@@ -93,8 +146,10 @@ function jsonRequest(counter) {
                 }
             }
             document.getElementById("initial").appendChild(select);
+            obj = obj.questions.q1.next;
         } catch(TypeError) {
             // this should prevent errors being thrown until the AJAX call completes
+            // for my own peace of mind more than anything else
         }
     }
 
