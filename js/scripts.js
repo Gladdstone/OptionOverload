@@ -2,7 +2,7 @@
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------
 
-const questions = "assets/newquestions.json";
+const questions = "assets/questions.json";
 
 // I'm not pleased that these are global variables either, but unfortunately, I'm tremendously lazy
 var ans = "1";
@@ -57,21 +57,26 @@ function getNext(value) {
         // increment obj to next question based on binary value
         obj = obj["q" + ans];
 
+        // question text
         let text = document.createElement("span");
         text.innerText = obj.text;
         article.appendChild(text);
 
+        // break
         let br = document.createElement("br");
         article.appendChild(br);
 
+        // select w/ onchange
         let select = document.createElement("select");
         select.setAttribute("onchange", "getNext(this.value)");
         article.appendChild(select);
 
+        // default select option
         let def = document.createElement("option");
         def.innerText = "Please select an option";
         select.appendChild(def);
 
+        // dynamically generated select options
         let options = obj.options;
         for(var option in options) {
             if(options.hasOwnProperty(option)) {
@@ -85,6 +90,16 @@ function getNext(value) {
         article.appendChild(select);
     } else {
         console.log(obj);
+
+        // break
+        let br = document.createElement("br");
+        article.appendChild(br);
+
+        // final answer and exit function
+        let answer = document.createElement("span");
+        answer.innerText = obj;
+        article.appendChild(answer);
+        return;
     }
 
     let br = document.createElement("br");
